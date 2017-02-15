@@ -1,0 +1,106 @@
+sudo: required
+dist: trusty
+language: c
+matrix:
+  include:
+    - compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.8
+          packages:
+            - g++-4.9
+            - valgrind
+            - python3
+            - clang-3.8
+      env:
+        - _CXX=g++-4.9
+        - _CC=gcc-4.9
+        - _SCANBUILD=scan-build-3.8
+    - compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.8
+          packages:
+            - g++-5
+            - valgrind
+            - python3
+            - clang-3.8
+      env:
+        - _CXX=g++-5
+        - _CC=gcc-5
+        - _SCANBUILD=scan-build-3.8
+    - compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.8
+          packages:
+            - g++-6
+            - valgrind
+            - python3
+            - clang-3.8
+      env:
+        - _CXX=g++-6
+        - _CC=gcc-6
+        - _SCANBUILD=scan-build-3.8
+    - compiler: clang
+      addons:
+        apt:
+          packages:
+            - clang-3.5
+            - valgrind
+            - python3
+      env:
+        - _CXX=clang++-3.5
+        - _CC=clang-3.5
+        - _SCANBUILD=scan-build-3.5
+    - compiler: clang
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.6
+          packages:
+            - clang-3.6
+            - valgrind
+            - python3
+      env:
+        - _CXX=clang++-3.6
+        - _CC=clang-3.6
+        - _SCANBUILD=scan-build-3.6
+    - compiler: clang
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.7
+          packages:
+            - clang-3.7
+            - valgrind
+            - python3
+      env:
+        - _CXX=clang++-3.7
+        - _CC=clang-3.7
+      # scan-build doesn't seem to work with 3.7 in Travis CI
+      # - _SCANBUILD=scan-build-3.7
+    - compiler: clang
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.8
+          packages:
+            - clang-3.8
+            - valgrind
+            - python3
+      env:
+        - _CXX=clang++-3.8
+        - _CC=clang-3.8
+        - _SCANBUILD=scan-build-3.8
+script:
+    - SCANBUILD=${_SCANBUILD:-scan-build} CXX=$_CXX CC=$_CC CCC_CC=$_CC ./.travis/comprehensive-ci-test.sh --verbose

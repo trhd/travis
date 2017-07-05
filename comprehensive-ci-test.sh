@@ -4,8 +4,6 @@ MESON=meson
 MESONCONF=mesonconf
 MESONTEST=mesontest
 MESONTEST_ARGS=("--no-stdsplit" "--print-errorlogs")
-VALGRIND_ARGS=("--leak-check=full" "--track-origins=yes" "-v"
-	"--show-leak-kinds=all" "--error-exitcode=1")
 
 
 get_meson()
@@ -119,15 +117,11 @@ can_do_valgrind()
 
 do_valgrind()
 {
-	local n buildtype="$1"
-
-	valgrind --help | grep -q -- "--max-threads" \
-		&& n="--max-threads=10000" \
-		|| n=""
+	local buildtype="$1"
 
 	printf "### Running valgrind with buildtype=\"%s\".\n" "$buildtype"
 
-	$MESONTEST "${MESONTEST_ARGS[@]}" -C "$BDIR-$buildtype" --wrap "valgrind $n ${VALGRIND_ARGS[*]}"
+	$MESONTEST "${MESONTEST_ARGS[@]}" -C "$BDIR-$buildtype" --setup valgrind
 }
 
 try_valgrind()

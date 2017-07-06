@@ -155,7 +155,7 @@ do_configure()
 
 	printf "### Configuring build directory with buildtype=\"%s\".\n" "$buildtype"
 
-	$MESON -Dbuildtype="$buildtype" "$BDIR-$buildtype"
+	$MESON --buildtype="$buildtype" "$BDIR-$buildtype"
 	$MESONCONF "$BDIR-$buildtype"
 }
 

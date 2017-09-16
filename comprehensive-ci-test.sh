@@ -1,10 +1,6 @@
 #!/bin/bash -eu
 
 MESON=meson
-MESONCONF=mesonconf
-MESONTEST=mesontest
-MESONTEST_ARGS=("--no-stdsplit" "--print-errorlogs")
-
 
 get_meson()
 {
@@ -25,8 +21,6 @@ get_meson()
 	PATH="$PWD/$(basename "${url%.tar.gz}")/:$PATH"
 
 	MESON+=.py
-	MESONCONF+=.py
-	MESONTEST+=.py
 
 	popd &>/dev/null
 }
@@ -121,7 +115,7 @@ do_valgrind()
 
 	printf "### Running valgrind with buildtype=\"%s\".\n" "$buildtype"
 
-	$MESONTEST "${MESONTEST_ARGS[@]}" -C "$BDIR-$buildtype" --setup valgrind
+	$MESON test --no-stdsplit --print-errorlogs -C "$BDIR-$buildtype" --setup valgrind
 }
 
 try_valgrind()
@@ -137,7 +131,7 @@ do_regular()
 
 	printf "### Running tests with buildtype=\"%s\".\n" "$buildtype"
 
-	$MESONTEST "${MESONTEST_ARGS[@]}" -C "$BDIR-$buildtype"
+	$MESON test  --no-stdsplit --print-errorlogs -C "$BDIR-$buildtype"
 }
 
 do_build()
@@ -156,7 +150,7 @@ do_configure()
 	printf "### Configuring build directory with buildtype=\"%s\".\n" "$buildtype"
 
 	$MESON --buildtype="$buildtype" "$BDIR-$buildtype"
-	$MESONCONF "$BDIR-$buildtype"
+	$MESON configure "$BDIR-$buildtype"
 }
 
 doit()

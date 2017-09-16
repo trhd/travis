@@ -48,6 +48,21 @@ matrix:
         - _CXX=g++-6
         - _CC=gcc-6
         - _SCANBUILD=scan-build-3.8
+    - compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.8
+          packages:
+            - g++-7
+            - valgrind
+            - python3
+            - clang-3.8
+      env:
+        - _CXX=g++-7
+        - _CC=gcc-7
+        - _SCANBUILD=scan-build-3.8
     - compiler: clang
       addons:
         apt:
@@ -102,5 +117,19 @@ matrix:
         - _CXX=clang++-3.8
         - _CC=clang-3.8
         - _SCANBUILD=scan-build-3.8
+    - compiler: clang
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.9
+          packages:
+            - clang-3.9
+            - valgrind
+            - python3
+      env:
+        - _CXX=clang++-3.9
+        - _CC=clang-3.9
+        - _SCANBUILD=scan-build-3.9
 script:
     - SCANBUILD=${_SCANBUILD:-scan-build} CXX=$_CXX CC=$_CC CCC_CC=$_CC ./.travis/comprehensive-ci-test.sh --verbose

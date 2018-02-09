@@ -1,6 +1,6 @@
 #!/bin/bash -eu
 
-MESON=meson
+[ -v MESON ] || MESON=meson
 
 get_meson()
 {
@@ -18,9 +18,22 @@ get_meson()
 
 	tar -xf "$(basename "$url")"
 
-	PATH="$PWD/$(basename "${url%.tar.gz}")/:$PATH"
+	MESON="$PWD/$(basename "${url%.tar.gz}")/meson.py"
 
-	MESON+=.py
+	popd &>/dev/null
+}
+
+clone_meson()
+{
+	local url="https://github.com/mesonbuild/meson"
+
+	printf "%s: Cloning meson from '%s'.\n" "$url"
+
+	pushd "$BDIR" &>/dev/null
+
+	git clone --depth=1 "$url"
+
+	MESON="$PWD/meson/meson.py"
 
 	popd &>/dev/null
 }
@@ -74,6 +87,8 @@ prepare_env()
 	trap cleanup EXIT
 
 	BDIR="$(mktemp -d)"
+
+	[ "${GIT_CLONE_MESON:-0}" -eq 0 ] || clone_meson
 
 	which $MESON &>/dev/null || get_meson
 	which ninja &>/dev/null || get_ninja
